@@ -42,12 +42,6 @@ done
 
 Move `encryption-config.yaml` encryption config file to appropriate directory.
 
-```
-for instance in master-1 master-2; do
-  ssh ${instance} sudo mv encryption-config.yaml /var/lib/kubernetes/
-done
-```
-
 Reference: https://kubernetes.io/docs/tasks/administer-cluster/encrypt-data/#encrypting-your-data
 
 Next: [Bootstrapping the etcd Cluster](07-bootstrapping-etcd.md)

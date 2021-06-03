@@ -70,7 +70,7 @@ Vagrant generates a private key for each of these VMs. It is placed under the .v
 - Ensure VMs are assigned the above IP addresses
 - Ensure you can SSH into these VMs using the IP and private keys
 - Ensure the VMs can ping each other
-- Ensure the worker nodes have Docker installed on them. Version: 18.06
+- Ensure the worker nodes have Docker installed on them. Version: 20.10.6 (latest version)
   > command `sudo docker version`
 
 ## Troubleshooting Tips

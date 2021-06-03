@@ -9,7 +9,7 @@ Create the `system:kube-apiserver-to-kubelet` [ClusterRole](https://kubernetes.i
 
 ```
 cat <<EOF | kubectl apply --kubeconfig admin.kubeconfig -f -
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   annotations:
@@ -32,16 +32,16 @@ EOF
 ```
 Reference: https://v1-12.docs.kubernetes.io/docs/reference/access-authn-authz/rbac/#role-and-clusterrole
 
-The Kubernetes API Server authenticates to the Kubelet as the `system:kube-apiserver` user using the client certificate as defined by the `--kubelet-client-certificate` flag.
+The Kubernetes API Server authenticates to the Kubelet as the `kube-apiserver` user using the client certificate as defined by the `--kubelet-client-certificate` flag.
 
-Bind the `system:kube-apiserver-to-kubelet` ClusterRole to the `system:kube-apiserver` user:
+Bind the `system:kube-apiserver-to-kubelet` ClusterRole to the `kube-apiserver` user:
 
 ```
 cat <<EOF | kubectl apply --kubeconfig admin.kubeconfig -f -
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: system:kube-apiserver
+  name: kube-apiserver
   namespace: ""
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -50,7 +50,7 @@ roleRef:
 subjects:
   - apiGroup: rbac.authorization.k8s.io
     kind: User
-    name: system:kube-apiserver
+    name: kube-apiserver
 EOF
 ```
 Reference: https://kubernetes.io/docs/reference/access-authn-authz/rbac/#rolebinding-and-clusterrolebinding

@@ -50,9 +50,9 @@ Copy the ca certificate to the worker node:
 
 ```
 worker-2$ wget -q --show-progress --https-only --timestamping \
-  https://storage.googleapis.com/kubernetes-release/release/v1.13.0/bin/linux/amd64/kubectl \
-  https://storage.googleapis.com/kubernetes-release/release/v1.13.0/bin/linux/amd64/kube-proxy \
-  https://storage.googleapis.com/kubernetes-release/release/v1.13.0/bin/linux/amd64/kubelet
+  https://storage.googleapis.com/kubernetes-release/release/v1.21.1/bin/linux/amd64/kubectl \
+  https://storage.googleapis.com/kubernetes-release/release/v1.21.1/bin/linux/amd64/kube-proxy \
+  https://storage.googleapis.com/kubernetes-release/release/v1.21.1/bin/linux/amd64/kubelet
 ```
 
 Reference: https://kubernetes.io/docs/setup/release/#node-binaries
@@ -77,6 +77,13 @@ Install the worker binaries:
   sudo mv kubectl kube-proxy kubelet /usr/local/bin/
 }
 ```
+
+### Copy certificates, private keys and kubeconfig files to the worker node:
+On master-1:
+```
+master-1$ scp ca.crt worker-2:~/
+```
+
 ### Move the ca certificate
 
 `worker-2$ sudo mv ca.crt /var/lib/kubernetes/`
@@ -108,8 +115,8 @@ stringData:
   token-id: 07401b
   token-secret: f395accd246ae52d
 
-  # Expiration. Optional.
-  expiration: 2021-03-10T03:22:11Z
+  # Expiration. Optional. CHANGE ME
+  expiration: 2022-05-31T03:22:11Z
 
   # Allowed usages.
   usage-bootstrap-authentication: "true"
@@ -120,12 +127,12 @@ stringData:
 EOF
 
 
-master-1$ kubectl create -f bootstrap-token-07401b.yaml
+master-1$ kubectl create -f bootstrap-token-07401b.yaml --kubeconfig admin.kubeconfig
 
 ```
 
 Things to note:
-- **expiration** - make sure its set to a date in the future.
+- **expiration** - make sure its set to a date in the future. (CHANGE EXPIRATION TO FUTURE DATE)
 - **auth-extra-groups** - this is the group the worker nodes are part of. It must start with "system:bootstrappers:" This group does not exist already. This group is associated with this token.
 
 Once this is created the token to be used for authentication is `07401b.f395accd246ae52d`
@@ -137,7 +144,7 @@ Reference: https://kubernetes.io/docs/reference/access-authn-authz/bootstrap-tok
 Next we associate the group we created before to the system:node-bootstrapper ClusterRole. This ClusterRole gives the group enough permissions to bootstrap the kubelet
 
 ```
-master-1$ kubectl create clusterrolebinding create-csrs-for-bootstrapping --clusterrole=system:node-bootstrapper --group=system:bootstrappers
+master-1$ kubectl create clusterrolebinding create-csrs-for-bootstrapping --clusterrole=system:node-bootstrapper --group=system:bootstrappers --kubeconfig admin.kubeconfig
 
 --------------- OR ---------------
 
@@ -158,14 +165,14 @@ roleRef:
 EOF
 
 
-master-1$ kubectl create -f csrs-for-bootstrapping.yaml
+master-1$ kubectl create -f csrs-for-bootstrapping.yaml --kubeconfig admin.kubeconfig
 
 ```
 Reference: https://kubernetes.io/docs/reference/command-line-tools-reference/kubelet-tls-bootstrapping/#authorize-kubelet-to-create-csr
 
 ## Step 3 Authorize workers(kubelets) to approve CSR
 ```
-master-1$ kubectl create clusterrolebinding auto-approve-csrs-for-group --clusterrole=system:certificates.k8s.io:certificatesigningrequests:nodeclient --group=system:bootstrappers
+master-1$ kubectl create clusterrolebinding auto-approve-csrs-for-group --clusterrole=system:certificates.k8s.io:certificatesigningrequests:nodeclient --group=system:bootstrappers --kubeconfig admin.kubeconfig
 
  --------------- OR ---------------
 
@@ -186,7 +193,7 @@ roleRef:
 EOF
 
 
-master-1$ kubectl create -f auto-approve-csrs-for-group.yaml
+master-1$ kubectl create -f auto-approve-csrs-for-group.yaml --kubeconfig admin.kubeconfig
 ```
 
 Reference: https://kubernetes.io/docs/reference/command-line-tools-reference/kubelet-tls-bootstrapping/#approval
@@ -196,7 +203,7 @@ Reference: https://kubernetes.io/docs/reference/command-line-tools-reference/kub
 We now create the Cluster Role Binding required for the nodes to automatically renew the certificates on expiry. Note that we are NOT using the **system:bootstrappers** group here any more. Since by the renewal period, we believe the node would be bootstrapped and part of the cluster already. All nodes are part of the **system:nodes** group.
 
 ```
-master-1$ kubectl create clusterrolebinding auto-approve-renewals-for-nodes --clusterrole=system:certificates.k8s.io:certificatesigningrequests:selfnodeclient --group=system:nodes
+master-1$ kubectl create clusterrolebinding auto-approve-renewals-for-nodes --clusterrole=system:certificates.k8s.io:certificatesigningrequests:selfnodeclient --group=system:nodes --kubeconfig admin.kubeconfig
 
 --------------- OR ---------------
 
@@ -217,7 +224,7 @@ roleRef:
 EOF
 
 
-master-1$ kubectl create -f auto-approve-renewals-for-nodes.yaml
+master-1$ kubectl create -f auto-approve-renewals-for-nodes.yaml --kubeconfig admin.kubeconfig
 ```
 
 Reference: https://kubernetes.io/docs/reference/command-line-tools-reference/kubelet-tls-bootstrapping/#approval
@@ -384,7 +391,7 @@ On worker-2:
 
 ## Step 9 Approve Server CSR
 
-`master-1$ kubectl get csr`
+`master-1$ kubectl get csr --kubeconfig admin.kubeconfig`
 
 ```
 NAME                                                   AGE   REQUESTOR                 CONDITION
@@ -412,8 +419,8 @@ master-1$ kubectl get nodes --kubeconfig admin.kubeconfig
 
 ```
 NAME       STATUS   ROLES    AGE   VERSION
-worker-1   NotReady   <none>   93s   v1.13.0
-worker-2   NotReady   <none>   93s   v1.13.0
+worker-1   NotReady   <none>   93s   v1.21.1
+worker-2   NotReady   <none>   93s   v1.21.1
 ```
 Note: It is OK for the worker node to be in a NotReady state. That is because we haven't configured Networking yet.
 

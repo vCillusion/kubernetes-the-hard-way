@@ -33,10 +33,12 @@ The [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl). command l
 
 Reference: [https://kubernetes.io/docs/tasks/tools/install-kubectl/](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
 
+Note: Installed using the native package management v1.21.1
+
 ### Linux
 
 ```
-wget https://storage.googleapis.com/kubernetes-release/release/v1.13.0/bin/linux/amd64/kubectl
+wget https://storage.googleapis.com/kubernetes-release/release/v1.21.1/bin/linux/amd64/kubectl
 ```
 
 ```
@@ -49,7 +51,7 @@ sudo mv kubectl /usr/local/bin/
 
 ### Verification
 
-Verify `kubectl` version 1.13.0 or higher is installed:
+Verify `kubectl` version 1.21.1 or higher is installed:
 
 ```
 kubectl version --client
@@ -58,7 +60,7 @@ kubectl version --client
 > output
 
 ```
-Client Version: version.Info{Major:"1", Minor:"13", GitVersion:"v1.13.0", GitCommit:"ddf47ac13c1a9483ea035a79cd7c10005ff21a6d", GitTreeState:"clean", BuildDate:"2018-12-03T21:04:45Z", GoVersion:"go1.11.2", Compiler:"gc", Platform:"linux/amd64"}
+Client Version: version.Info{Major:"1", Minor:"21", GitVersion:"v1.21.1", GitCommit:"5e58841cce77d4bc13713ad2b91fa0d961e69192", GitTreeState:"clean", BuildDate:"2021-05-12T14:18:45Z", GoVersion:"go1.16.4", Compiler:"gc", Platform:"linux/amd64"}
 ```
 
 Next: [Certificate Authority](04-certificate-authority.md)
