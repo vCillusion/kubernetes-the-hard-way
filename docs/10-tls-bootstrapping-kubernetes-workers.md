@@ -319,6 +319,7 @@ ExecStart=/usr/local/bin/kubelet \\
   --kubeconfig=/var/lib/kubelet/kubeconfig \\
   --cert-dir=/var/lib/kubelet/pki/ \\
   --rotate-certificates=true \\
+  --rotate-server-certificates=true \\
   --network-plugin=cni \\
   --register-node=true \\
   --v=2
@@ -394,14 +395,15 @@ On worker-2:
 `master-1$ kubectl get csr --kubeconfig admin.kubeconfig`
 
 ```
-NAME                                                   AGE   REQUESTOR                 CONDITION
-csr-95bv6                                              20s   system:node:worker-2      Pending
+NAME        AGE   SIGNERNAME                                    REQUESTOR                 CONDITION
+csr-lf8jg   86s   kubernetes.io/kube-apiserver-client-kubelet   system:bootstrap:07401b   Approved,Issued
+csr-vz4mr   4s    kubernetes.io/kubelet-serving                 system:node:worker-2      Pending
 ```
 
 
 Approve
 
-`master-1$ kubectl certificate approve csr-95bv6`
+`master-1$ kubectl certificate approve csr-vz4mr --kubeconfig admin.kubeconfig`
 
 Note: In the event your cluster persists for longer than 365 days, you will need to manually approve the replacement CSR.
 

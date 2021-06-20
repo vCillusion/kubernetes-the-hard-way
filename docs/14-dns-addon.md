@@ -7,7 +7,7 @@ In this lab you will deploy the [DNS add-on](https://kubernetes.io/docs/concepts
 Deploy the `coredns` cluster add-on:
 
 ```
-kubectl apply -f https://raw.githubusercontent.com/mmumshad/kubernetes-the-hard-way/master/deployments/coredns.yaml
+kubectl apply -f https://raw.githubusercontent.com/vCillusion/kubernetes-the-hard-way/master-kubernetes-1.2.1/deployments/coredns.yaml
 ```
 
 > output
@@ -42,7 +42,7 @@ Reference: https://kubernetes.io/docs/tasks/administer-cluster/coredns/#installi
 Create a `busybox` deployment:
 
 ```
-kubectl run --generator=run-pod/v1  busybox --image=busybox:1.28 --command -- sleep 3600
+kubectl run busybox --image=busybox:1.28 --command -- sleep 3600
 ```
 
 List the pod created by the `busybox` deployment:
