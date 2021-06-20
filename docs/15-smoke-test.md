@@ -153,3 +153,6 @@ Next: [End to End Tests](16-e2e-tests.md)
 
 Reference:
 https://kubernetes.io/docs/tasks/tools/included/optional-kubectl-configs-bash-linux/
+
+Use below command to load code from shared drive and restart
+`sudo usermod --append --groups vboxsf $USER`
