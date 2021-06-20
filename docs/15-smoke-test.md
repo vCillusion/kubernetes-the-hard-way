@@ -146,3 +146,10 @@ nginx version: nginx/1.15.9
 ```
 
 Next: [End to End Tests](16-e2e-tests.md)
+
+## Turn on autocomplete
+
+`echo 'source <(kubectl completion bash)' >>~/.bashrc`
+
+Reference:
+https://kubernetes.io/docs/tasks/tools/included/optional-kubectl-configs-bash-linux/
